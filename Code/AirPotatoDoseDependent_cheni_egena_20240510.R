@@ -109,7 +109,7 @@ summary(lm3ch3)
 simulateResiduals(lm3ch3, plot=T)
 MuMIn::r.squaredGLMM(lm3ch3) #theoretical R2m, R2c= 0.10891973 ; delta R2m, R2c= 0.06104416
 
-ddc2c <- ggplot(ddc, aes(x=Trt, y=Surv, fill=Trt))+
+ddc2c <- ggplot(ddc2, aes(x=Trt, y=Surv, fill=Trt))+
   geom_smooth(method="glm", formula = y~x+I(x^2), method.args=list(family=binomial),
               color="#395D9C", fill="#395D9C", lwd=2)+
   geom_jitter(height=0.05, width=.25, pch=21, size=2) +
@@ -209,7 +209,7 @@ simulateResiduals(lm3a2, plot=T)
 Anova(lm3a2)  # trt p= 0.02666
 MuMIn::r.squaredGLMM(lm3a2) # Theoretical R2m, R2c= 0.15622464,  delta R2m, R2c= 0.05197148 
 
-dd2a <- ggplot(dd, aes(x=Trt, y=Surv, fill=Trt))+
+dd2a <- ggplot(dd, aes(x=Trt*100, y=Surv, fill=Trt))+
   geom_smooth(method="glm", formula = y~x+I(x^2), method.args=list(family=binomial),
               color="#395D9C", fill="#395D9C", lwd=2)+
   geom_jitter(height=0.05, width=.25, pch=21, size=2) +
@@ -217,7 +217,7 @@ dd2a <- ggplot(dd, aes(x=Trt, y=Surv, fill=Trt))+
   scale_y_continuous(labels = scales::percent)+
   labs(y="Survival", x="Diosgenin in diet (mg/g)")+
   theme_bw(base_size = 24)+
-  theme(legend.position = "none"); ddc2c
+  theme(legend.position = "none"); dd2a
 
 #ggsave("ddPlot2egena.tiff", dd2be, width=3, height=4, units="in", dpi=600, compression = "lzw")
 
