@@ -71,7 +71,8 @@ m1 <- glmmTMB(Tunnel_weight..g. ~ Treatment , data=db)
 Anova(m1)
 simulateResiduals(m1, plot=T)
 
-m2 <- glmmTMB(Frass_weight ~ Treatment + Feeding_slice, data=db)
+m2 <- glmmTMB(Frass_weight ~ Treatment #+ Feeding_slice
+              , data=db)
 Anova(m2)
 simulateResiduals(m2, plot=T)
 
@@ -108,13 +109,13 @@ bd3 <- ggplot(db , aes(x=Treatment, y=Pupa_weight..g.*1000))+
 bd4 <- ggplot(db , aes(x=Treatment, y=Emerged_beetle_weight*1000))+  
   geom_boxplot(alpha = 0.4, outlier.shape = NA, aes(fill = Treatment))+  
   geom_jitter(height = 0, width = 0.1, size= 2, alpha=0.7)+  
-  labs(y="Emerged beetle weight (mg)", x="Treatment")+
+  labs(y="Beetle weight (mg)", x="Treatment")+
   theme_bw(base_size = 16)
 
 beetle_plot <- (bd1+bd2)/(bd3+bd4) +
   plot_annotation(tag_levels = 'a') + plot_layout(guides='collect') & theme(legend.position='none')
 
-ggsave("beetle_plot.tiff", beetle_plot, width=12, height=8, units="in", dpi=600, compression = "lzw", path="Outputs")
+ggsave("beetle_plot.tiff", beetle_plot, width=12, height=9, units="in", dpi=600, compression = "lzw", path="Outputs")
 
 # EXTRA analysis for growth rate -- correlations between wax or frass weight and pupae weight ####
 ## other figures ####
