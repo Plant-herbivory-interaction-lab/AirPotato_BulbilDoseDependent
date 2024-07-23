@@ -30,6 +30,8 @@ ddc1 <- ddc %>% mutate(Beetle.Wgt=Beetle.FW-Beetle.IW,
 
 head(ddc1) 
 
+
+
 ddc2 <- ddc %>% mutate(Beetle.Wgt=Beetle.FW-Beetle.IW,
                           Frass.Wgt=Frass.tube.FW-Frass.tube.IW,
                           Treatment=fct_relevel(Treatment, c("Control","2.5mg","5mg","10mg","15mg","20mg")),
@@ -42,6 +44,12 @@ ddc2 <- ddc %>% mutate(Beetle.Wgt=Beetle.FW-Beetle.IW,
                           Trt=as.numeric(Trt), Surv=(1-Dead)) %>% 
                           filter(Frass.Wgt<.1)
 
+survival_summary_cheni <- ddc2 %>%
+  group_by(Treatment) %>%
+  summarise(
+    Total = n(),
+    Survived = sum(Surv),
+    Died = Total - Survived)
 
 
 ddc_resp <- ddc1 %>% select(Trt, Beetle.Wgt, Frass.Wgt, Surv )
@@ -67,11 +75,13 @@ summary(lm1ch3)
 simulateResiduals(lm1ch3, plot=T)
 MuMIn::r.squaredGLMM(lm1ch3) # R2m= 0.02772571 ; R2c= 0.02772571
 
-ddc1ae <- ggplot(ddc1%>% filter(Beetle.Wgt<20), aes(x=Trt, y=Beetle.Wgt))+
-  geom_smooth(method="lm", formula = y~x+I(x^2))+
-  geom_point() +
+ddc1ae <- ggplot(ddc1%>% filter(Beetle.Wgt<20), aes(x=Trt, y=Beetle.Wgt, fill=Trt))+
+  geom_smooth(method="lm", formula = y~x+I(x^2), color="#395D9C", fill="#395D9C", lwd=2)+
+  geom_jitter(height=0, width=.1, pch=21, size=3) +
+  scale_fill_viridis(direction=-1, option="G")+
   labs(y="Change in beetles mass (mg)", x="Diosgenin in diet (mg/g)")+
-  theme_bw(base_size = 24); ddc1ae
+  theme_bw(base_size = 24)+
+  theme(legend.position = "none"); ddc1ae
 
 # Frass weight -----------------------------------------------------------
 lm2ch1 <- glmmTMB(Frass.Wgt~1, data=ddc1)
@@ -89,7 +99,7 @@ MuMIn::r.squaredGLMM(lm2ch3)
 #Without NAs R2m, R2c= 0.06693664 
 
 
-ddc2be <- ggplot(ddc , aes(x=Trt, y=Frass.Wgt*1000, fill=Trt))+
+ddc2be <- ggplot(ddc1 , aes(x=Trt, y=Frass.Wgt*1000, fill=Trt))+
   geom_smooth(method="lm", formula = y~x+I(x^2), color="#395D9C", fill="#395D9C", lwd=2)+
   geom_jitter(height=0, width=.1, pch=21, size=3) +
   scale_fill_viridis(direction=-1, option="G")+
@@ -120,11 +130,12 @@ ddc2c <- ggplot(ddc2, aes(x=Trt, y=Surv, fill=Trt))+
   theme(legend.position = "none"); ddc2c
 
 
+beetle_plot_cheni_dose <- (ddc2be+ddc2c) +
+  plot_annotation(tag_levels = 'a') + 
+  plot_layout(guides='collect') & theme(legend.position='none');beetle_plot_cheni_dose
 
+ggsave("beetle_plot_cheni_dose2.tiff", beetle_plot_cheni_dose, width=12, height=6, units="in", dpi=600, compression = "lzw", path="Outputs")
 
-
-ddcplot2 <- ddc2be+ddc2c
-#ggsave("ddcPlot2cheni.tiff", ddcplot2, width=6, height=4, units="in", dpi=600, compression = "lzw")
 
 
 # # Load egena dose dependent data file -----------------------------------
@@ -146,6 +157,14 @@ dd <- dd %>% mutate(Beetle.Wgt=Beetle.FW-Beetle.IW,
                       Trt=as.numeric(Trt), Surv=(1-Dead))
 
 head(dd) 
+
+survival_summary_egena <- dd %>%
+  group_by(Treatment) %>%
+  summarise(
+    Total = n(),
+    Survived = sum(Surv),
+    Died = Total - Survived)
+
 
 dd_resp <- dd %>% select(Trt, Beetle.Wgt, Frass.Wgt, Surv )
 summary(dd_resp)
@@ -189,7 +208,7 @@ lm2a3 <- glmmTMB(Frass.Wgt~Treatment+I(Treatment^2), data=dd)
 anova(lm2a1,lm2a2,lm2a3) # linear model has lower aic= -694.06 and lower P = 0.01733 *
 simulateResiduals(lm2a2, plot=T)
 Anova(lm2a2) #P= 0.01604 *
-
+summary(lm2a2)
 MuMIn::r.squaredGLMM(lm2a2) #R2m, R2c= 0.0464632
 
 dd2be <- ggplot(dd , aes(x=Treatment*100, y=Frass.Wgt*1000, fill=Treatment))+
@@ -207,10 +226,11 @@ lm3a3 <- glmmTMB(Surv~Trt+I(Trt^2), data=dd, family=binomial )
 anova(lm3a1,lm3a2,lm3a3) # linear model anova p = 0.01743 lower aic than linear model 76.368
 simulateResiduals(lm3a2, plot=T)
 Anova(lm3a2)  # trt p= 0.02666
+summary(lm3a2)
 MuMIn::r.squaredGLMM(lm3a2) # Theoretical R2m, R2c= 0.15622464,  delta R2m, R2c= 0.05197148 
 
 dd2a <- ggplot(dd, aes(x=Trt*100, y=Surv, fill=Trt))+
-  geom_smooth(method="glm", formula = y~x+I(x^2), method.args=list(family=binomial),
+  geom_smooth(method="lm", formula = y~x+I(x^2), method.args=list(family=binomial),
               color="#395D9C", fill="#395D9C", lwd=2)+
   geom_jitter(height=0.05, width=.25, pch=21, size=2) +
   scale_fill_viridis(direction=-1, option="G")+
@@ -219,6 +239,9 @@ dd2a <- ggplot(dd, aes(x=Trt*100, y=Surv, fill=Trt))+
   theme_bw(base_size = 24)+
   theme(legend.position = "none"); dd2a
 
-#ggsave("ddPlot2egena.tiff", dd2be, width=3, height=4, units="in", dpi=600, compression = "lzw")
+beetle_plot_egena_dose <- (dd2be+dd2a) +
+  plot_annotation(tag_levels = 'a') + 
+  plot_layout(guides='collect') & theme(legend.position='none');beetle_plot_egena_dose
 
+ggsave("beetle_plot_egena_dose2.tiff", beetle_plot_egena_dose, width=12, height=6, units="in", dpi=600, compression = "lzw", path="Outputs")
 
