@@ -84,9 +84,9 @@ ddc1ae <- ggplot(ddc1%>% filter(Beetle.Wgt<20), aes(x=Trt, y=Beetle.Wgt, fill=Tr
   theme(legend.position = "none"); ddc1ae
 
 # Frass weight -----------------------------------------------------------
-lm2ch1 <- glmmTMB(Frass.Wgt~1, data=ddc1)
-lm2ch2 <- glmmTMB(Frass.Wgt~Trt, data=ddc1)
-lm2ch3 <- glmmTMB(Frass.Wgt~Trt+I(Trt^2), data=ddc1)
+lm2ch1 <- glmmTMB(Frass.Wgt*1000~1, data=ddc1)
+lm2ch2 <- glmmTMB(Frass.Wgt*1000~Trt, data=ddc1)
+lm2ch3 <- glmmTMB(Frass.Wgt*1000~Trt+I(Trt^2), data=ddc1)
 anova(lm2ch1,lm2ch2,lm2ch3) 
 # with NAs quadratic model anova p = 0.001148 ** lower aic than linear model -869.48
 # without NAs quadratic model anova p = 0.05977 ** lower aic than linear model -719.03
@@ -230,7 +230,7 @@ summary(lm3a2)
 MuMIn::r.squaredGLMM(lm3a2) # Theoretical R2m, R2c= 0.15622464,  delta R2m, R2c= 0.05197148 
 
 dd2a <- ggplot(dd, aes(x=Trt*100, y=Surv, fill=Trt))+
-  geom_smooth(method="lm", formula = y~x+I(x^2), method.args=list(family=binomial),
+  geom_smooth(method="glm", formula = y~x, method.args=list(family=binomial),
               color="#395D9C", fill="#395D9C", lwd=2)+
   geom_jitter(height=0.05, width=.25, pch=21, size=2) +
   scale_fill_viridis(direction=-1, option="G")+
