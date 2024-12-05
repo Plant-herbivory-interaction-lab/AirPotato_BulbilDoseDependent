@@ -129,16 +129,17 @@ Anova(mod2)
 emmeans(mod2, pairwise~Treatment)
 emtrends(mod2, ~Treatment, var="Frass_weight", infer=T)
 
+# can color these graphs the same as the boxplot if wanted
 extraplot1 <- ggplot(db , aes(x=Tunnel_weight..g., y=Pupa_weight..g.*1000))+
   geom_point()+
-  geom_smooth(method="lm")+
+  geom_smooth(method="lm", color="black")+
   facet_wrap(~Treatment)+
   labs(y="Pupae weight (mg)", x="Weight of wax (g)")+
   theme_bw(base_size = 24)
 
 extraplot2 <- ggplot(db , aes(x=Frass_weight, y=Pupa_weight..g.*1000))+
   geom_point()+
-  geom_smooth(method="lm")+
+  geom_smooth(method="lm", color="black")+
   facet_wrap(~Treatment)+
   labs(y="Pupae weight (mg)", x="Frass weight (g)")+
   theme_bw(base_size = 24)
