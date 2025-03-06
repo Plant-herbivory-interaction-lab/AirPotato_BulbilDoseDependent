@@ -117,6 +117,25 @@ beetle_plot <- (bd1+bd2)/(bd3+bd4) +
 
 ggsave("beetle_plot.tiff", beetle_plot, width=12, height=9, units="in", dpi=600, compression = "lzw", path="Outputs")
 
+## Figures for SEB March 2025 presentation ####
+bd2s <- ggplot(db , aes(x=Treatment, y=Frass_weight*1000))+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA, fill = "Red")+  
+  geom_jitter(height = 0, width = 0.1, size= 3, alpha=0.7)+  
+  labs(y="Frass weight (mg)", x="Treatment")+
+  theme_bw(base_size = 24)
+bd3s <- ggplot(db , aes(x=Treatment, y=Pupa_weight..g.*1000))+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA, fill = "Red")+  
+  geom_jitter(height = 0, width = 0.1, size= 3, alpha=0.7)+  
+  labs(y="Pupae weight (mg)", x="Treatment")+
+  theme_bw(base_size = 24)
+
+beetle_plotSEB <- (bd2s+bd3s)+
+  plot_annotation(tag_levels = 'a') + plot_layout(guides='collect') & theme(legend.position='none')
+
+ggsave("beetle_plotSEB.tiff", beetle_plotSEB, width=15, height=6, units="in", dpi=600, compression = "lzw", path="Outputs")
+
+
+
 # EXTRA analysis for growth rate -- correlations between wax or frass weight and pupae weight ####
 ## other figures ####
 mod1 <- glmmTMB(Pupa_weight..g.*1000~Tunnel_weight..g.*Treatment, data=db)
@@ -132,15 +151,16 @@ emtrends(mod2, ~Treatment, var="Frass_weight", infer=T)
 # can color these graphs the same as the boxplot if wanted
 extraplot1 <- ggplot(db , aes(x=Tunnel_weight..g., y=Pupa_weight..g.*1000))+
   geom_point()+
-  geom_smooth(method="lm", color="black")+
+  geom_smooth(method="lm", color="black", fill="red")+
   facet_wrap(~Treatment)+
   labs(y="Pupae weight (mg)", x="Weight of wax (g)")+
   theme_bw(base_size = 24)
 
 extraplot2 <- ggplot(db , aes(x=Frass_weight, y=Pupa_weight..g.*1000))+
-  geom_point()+
-  geom_smooth(method="lm", color="black")+
+  geom_point(size=2)+
+  geom_smooth(method="lm", color="black", fill="red")+
   facet_wrap(~Treatment)+
   labs(y="Pupae weight (mg)", x="Frass weight (g)")+
   theme_bw(base_size = 24)
 
+ggsave("beetle_plot2SEB.tiff", extraplot2, width=10, height=7, units="in", dpi=600, compression = "lzw", path="Outputs")
