@@ -49,7 +49,7 @@ survival_summary_cheni <- ddc2 %>%
   summarise(
     Total = n(),
     Survived = sum(Surv),
-    Died = Total - Survived)
+    Died = Total - Survived); survival_summary_cheni
 
 
 ddc_resp <- ddc1 %>% select(Trt, Beetle.Wgt, Frass.Wgt, Surv )
@@ -103,7 +103,10 @@ ddc2be <- ggplot(ddc1 , aes(x=Trt, y=Frass.Wgt*1000, fill=Trt))+
   geom_smooth(method="lm", formula = y~x+I(x^2), color="#395D9C", fill="#395D9C", lwd=2)+
   geom_jitter(height=0, width=.1, pch=21, size=3) +
   scale_fill_viridis(direction=-1, option="G")+
-  labs(y="Frass mass (mg)", x="Diosgenin in diet (mg/g)")+
+  labs(
+    y = expression(atop("Frass mass (mg)", italic("of L. cheni"))), # Two-line label with consistent spacing
+    x = "Diosgenin in diet (mg/g)"
+  ) +
   theme_bw(base_size = 24)+
   theme(legend.position = "none"); ddc2be
 
@@ -125,7 +128,8 @@ ddc2c <- ggplot(ddc2, aes(x=Trt, y=Surv, fill=Trt))+
   geom_jitter(height=0.05, width=.25, pch=21, size=2) +
   scale_fill_viridis(direction=-1, option="G")+
   scale_y_continuous(labels = scales::percent)+
-  labs(y="Survival", x="Diosgenin in diet (mg/g)")+
+  labs(y = expression("Survival of " * italic("L. cheni")), 
+       x = "Diosgenin in diet (mg/g)")+
   theme_bw(base_size = 24)+
   theme(legend.position = "none"); ddc2c
 
@@ -163,7 +167,7 @@ survival_summary_egena <- dd %>%
   summarise(
     Total = n(),
     Survived = sum(Surv),
-    Died = Total - Survived)
+    Died = Total - Survived); survival_summary_egena
 
 
 dd_resp <- dd %>% select(Trt, Beetle.Wgt, Frass.Wgt, Surv )
@@ -215,7 +219,10 @@ dd2be <- ggplot(dd , aes(x=Treatment*100, y=Frass.Wgt*1000, fill=Treatment))+
   geom_smooth(method="lm", formula = y~x, color="#395D9C", fill="#395D9C", lwd=2)+
   geom_jitter(height=0, width=.1, pch=21, size=3) +
   scale_fill_viridis(direction=-1, option="G")+
-  labs(y="Frass mass (mg)", x="Diosgenin in diet (mg/g)")+
+  labs(
+    y = expression(atop("Frass mass (mg)", italic("of L. egena"))), # Two-line label with consistent spacing
+    x = "Diosgenin in diet (mg/g)"
+  ) +
   theme_bw(base_size = 24)+
   theme(legend.position = "none"); dd2be
 
@@ -235,7 +242,8 @@ dd2a <- ggplot(dd, aes(x=Trt*100, y=Surv, fill=Trt))+
   geom_jitter(height=0.05, width=.25, pch=21, size=2) +
   scale_fill_viridis(direction=-1, option="G")+
   scale_y_continuous(labels = scales::percent)+
-  labs(y="Survival", x="Diosgenin in diet (mg/g)")+
+  labs(y = expression("Survival of " * italic("L. egena")), 
+    x = "Diosgenin in diet (mg/g)")+
   theme_bw(base_size = 24)+
   theme(legend.position = "none"); dd2a
 
@@ -245,3 +253,11 @@ beetle_plot_egena_dose <- (dd2be+dd2a) +
 
 ggsave("beetle_plot_egena_dose2.tiff", beetle_plot_egena_dose, width=12, height=6, units="in", dpi=600, compression = "lzw", path="Outputs")
 
+
+
+#new Figure 3 with combined cheni and egena frass mass and survival
+
+beetle_plot_figure_3 <- (ddc2be+ddc2c)/(dd2be+dd2a) +
+  plot_annotation(tag_levels = 'a') + plot_layout(guides='collect') & theme(legend.position='none'); beetle_plot_figure_3
+
+ggsave("beetle_plot_egena_dose_figure_3.tiff", beetle_plot_figure_3, width=12, height=10, units="in", dpi=600, compression = "lzw", path="Outputs")

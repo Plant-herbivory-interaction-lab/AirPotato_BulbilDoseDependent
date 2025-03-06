@@ -91,26 +91,26 @@ simulateResiduals(m4, plot=T)
 bd1 <- ggplot(db , aes(x=Treatment, y=Tunnel_weight..g.*1000))+  
   geom_boxplot(alpha = 0.4, outlier.shape = NA, aes(fill = Treatment))+  
   geom_jitter(height = 0, width = 0.1, size= 2, alpha=0.7)+  
-  labs(y="Wax weight (mg)", x="Treatment")+
-  theme_bw(base_size = 16)
+  labs(y="Wax weight (mg)", x="")+
+  theme_bw(base_size = 24)
 
 bd2 <- ggplot(db , aes(x=Treatment, y=Frass_weight*1000))+  
   geom_boxplot(alpha = 0.4, outlier.shape = NA, aes(fill = Treatment))+  
   geom_jitter(height = 0, width = 0.1, size= 2, alpha=0.7)+  
-  labs(y="Frass weight (mg)", x="Treatment")+
-  theme_bw(base_size = 16)
+  labs(y="Frass weight (mg)", x="")+
+  theme_bw(base_size = 24)
 
 bd3 <- ggplot(db , aes(x=Treatment, y=Pupa_weight..g.*1000))+  
   geom_boxplot(alpha = 0.4, outlier.shape = NA, aes(fill = Treatment))+  
   geom_jitter(height = 0, width = 0.1, size= 2, alpha=0.7)+  
-  labs(y="Pupae weight (mg)", x="Treatment")+
-  theme_bw(base_size = 16)
+  labs(y="Pupae weight (mg)", x="")+
+  theme_bw(base_size = 24)
 
 bd4 <- ggplot(db , aes(x=Treatment, y=Emerged_beetle_weight*1000))+  
   geom_boxplot(alpha = 0.4, outlier.shape = NA, aes(fill = Treatment))+  
   geom_jitter(height = 0, width = 0.1, size= 2, alpha=0.7)+  
-  labs(y="Beetle weight (mg)", x="Treatment")+
-  theme_bw(base_size = 16)
+  labs(y="Beetle weight (mg)", x="")+
+  theme_bw(base_size = 24)
 
 beetle_plot <- (bd1+bd2)/(bd3+bd4) +
   plot_annotation(tag_levels = 'a') + plot_layout(guides='collect') & theme(legend.position='none')
@@ -149,6 +149,7 @@ emmeans(mod2, pairwise~Treatment)
 emtrends(mod2, ~Treatment, var="Frass_weight", infer=T)
 
 # can color these graphs the same as the boxplot if wanted
+<<<<<<< HEAD
 extraplot1 <- ggplot(db , aes(x=Tunnel_weight..g., y=Pupa_weight..g.*1000))+
   geom_point()+
   geom_smooth(method="lm", color="black", fill="red")+
@@ -162,5 +163,38 @@ extraplot2 <- ggplot(db , aes(x=Frass_weight, y=Pupa_weight..g.*1000))+
   facet_wrap(~Treatment)+
   labs(y="Pupae weight (mg)", x="Frass weight (g)")+
   theme_bw(base_size = 24)
+=======
+
+extraplot1 <- ggplot(db, aes(x = Tunnel_weight..g., y = Pupa_weight..g.*1000, color = Treatment)) +
+  geom_point(alpha = 0.7, size = 2) + 
+  geom_smooth(method = "lm", color = "black", aes(fill = Treatment), alpha = 0.2) + 
+  facet_wrap(~Treatment, labeller = labeller(Treatment = c(
+    "Control" = "a.  Control", 
+    "Beetle" = "b.  Beetle", 
+    "JA" = "c.  Jasmonic Acid", 
+    "SA" = "d.  Salicylic Acid"))) + 
+  labs(y = "Pupae weight (mg)", x = "Weight of wax (g)") +
+  theme_bw(base_size = 24) +
+  theme( strip.text = element_text(hjust = 0, face = "bold", size = 24),
+         legend.position = "none");extraplot1
+
+
+extraplot2 <- ggplot(db, aes(x = Frass_weight, y = Pupa_weight..g.*1000, color = Treatment)) +
+  geom_point(alpha = 0.7, size = 2) + 
+  geom_smooth(method = "lm", color = "black", aes(fill = Treatment), alpha = 0.2) + 
+  facet_wrap(~Treatment, labeller = labeller(Treatment = c(
+    "Control" = "a.  Control", 
+    "Beetle" = "b.  Beetle", 
+    "JA" = "c.  Jasmonic Acid", 
+    "SA" = "d.  Salicylic Acid"))) + 
+  labs(y = "Pupae weight (mg)", x = "Frass weight (mg)") +
+  theme_bw(base_size = 24) +
+  theme( strip.text = element_text(hjust = 0, face = "bold", size = 24),
+         legend.position = "none"); extraplot2
+
+
+
+ggsave("extraplot2.tiff", extraplot2, width=12, height=9, units="in", dpi=600, compression = "lzw", path="Outputs")
+>>>>>>> b4feb66c7e9256f680c1024c5486a8eadc596cd6
 
 ggsave("beetle_plot2SEB.tiff", extraplot2, width=10, height=7, units="in", dpi=600, compression = "lzw", path="Outputs")
