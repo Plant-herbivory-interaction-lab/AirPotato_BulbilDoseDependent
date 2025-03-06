@@ -149,7 +149,6 @@ emmeans(mod2, pairwise~Treatment)
 emtrends(mod2, ~Treatment, var="Frass_weight", infer=T)
 
 # can color these graphs the same as the boxplot if wanted
-<<<<<<< HEAD
 extraplot1 <- ggplot(db , aes(x=Tunnel_weight..g., y=Pupa_weight..g.*1000))+
   geom_point()+
   geom_smooth(method="lm", color="black", fill="red")+
@@ -163,7 +162,6 @@ extraplot2 <- ggplot(db , aes(x=Frass_weight, y=Pupa_weight..g.*1000))+
   facet_wrap(~Treatment)+
   labs(y="Pupae weight (mg)", x="Frass weight (g)")+
   theme_bw(base_size = 24)
-=======
 
 extraplot1 <- ggplot(db, aes(x = Tunnel_weight..g., y = Pupa_weight..g.*1000, color = Treatment)) +
   geom_point(alpha = 0.7, size = 2) + 
@@ -195,6 +193,5 @@ extraplot2 <- ggplot(db, aes(x = Frass_weight, y = Pupa_weight..g.*1000, color =
 
 
 ggsave("extraplot2.tiff", extraplot2, width=12, height=9, units="in", dpi=600, compression = "lzw", path="Outputs")
->>>>>>> b4feb66c7e9256f680c1024c5486a8eadc596cd6
 
 ggsave("beetle_plot2SEB.tiff", extraplot2, width=10, height=7, units="in", dpi=600, compression = "lzw", path="Outputs")
